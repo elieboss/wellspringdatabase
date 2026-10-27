@@ -1,0 +1,16 @@
+{
+  "name": "greenbridge-route-lab",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "dotenv": "^17.0.0",
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}

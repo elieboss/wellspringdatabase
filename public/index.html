@@ -4,16 +4,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Greenbridge Route Lab</title>
+    <title>Wellspring Maintenance</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <main>
         <header>
-            <p class="eyebrow">Culture & Codes · Lesson 4.5</p>
-            <h1>Greenbridge Route Lab</h1>
-            <p>Four actions. One server. Watch each request and response.</p>
+            <p class="eyebrow">Wellspring · Maintenance &amp; Vendor Coordination</p>
+            <h1>Wellspring Maintenance</h1>
+            <p>Follow every problem from first report to resolution, with each vendor job, delivery and cost connected to it.</p>
+
+            <label for="actingAs">Acting as</label>
+            <select id="actingAs"></select>
+            <small>Used as the reporter, the author of status updates, and the person who signs for deliveries.</small>
         </header>
 
 
@@ -25,63 +29,147 @@
 
 
         <section class="panel">
-            <h2>2 · READ <code>GET</code></h2>
-            <label for="search">Search request titles</label>
-            <div class="inline">
-                <input id="search" placeholder="Try light">
-                <button id="read">Search</button>
-            </div>
-        </section>
-
-
-        <section class="panel">
-            <h2>3 · CREATE <code>POST</code></h2>
+            <h2>2 · Report a problem <code>POST</code></h2>
             <form id="create">
-                <label>Title<input name="title" required maxlength="120" placeholder="Broken window"></label>
-                <label>Location<input name="location" required maxlength="100" value="Lobby"></label>
-                <label>Description<input name="description" required maxlength="2000" value="Needs repair"></label>
-                <button>Create request</button>
+                <label>Title<input name="title" required maxlength="120" placeholder="AC not cooling"></label>
+                <label>What is wrong<textarea name="description" required maxlength="2000" rows="2" placeholder="AC is running but the room is not cooling down"></textarea></label>
+                <div class="grid">
+                    <label>Room<select name="room_id" required data-list="rooms"></select></label>
+                    <label>Kind of problem<select name="category_id" required data-list="categories"></select></label>
+                    <label>Urgency<select name="urgency" required data-list="urgencies"></select></label>
+                </div>
+                <button>Report problem</button>
             </form>
         </section>
 
 
         <section class="panel">
-            <h2>4 · UPDATE <code>PATCH</code></h2>
-            
-            <form id="update">
-                <label>Request ID<input name="id" type="number" min="1" required value="1"></label><label>New status
-                    <select name="status">
-                        <option value="submitted">Submitted</option>
-                        <option value="in_progress">In progress</option>
-                        <option value="completed">Completed</option>
-                    </select>
-                </label>
-                
-                <button>Update status</button>
-            
+            <h2>3 · Requests <code>GET</code></h2>
+            <form id="filter">
+                <div class="grid">
+                    <label>Room<select name="room_id" data-list="rooms" data-blank="All rooms"></select></label>
+                    <label>Status
+                        <select name="status">
+                            <option value="open">Open (not resolved)</option>
+                            <option value="">All</option>
+                            <option>Reported</option>
+                            <option>Assigned</option>
+                            <option>In Progress</option>
+                            <option>Resolved</option>
+                        </select>
+                    </label>
+                    <label>Title contains<input name="search" placeholder="AC"></label>
+                </div>
+                <button>Show requests</button>
             </form>
-
-        </section>
-
-
-        <section class="panel">
-            <h2>5 · DELETE <code>DELETE</code></h2>
-            
-            <form id="delete">
-                <label>Test request ID<input name="id" type="number" min="1" required></label>
-                
-                <button class="danger">Delete test record</button>
-            
-            </form>
-            
-            <small>Use only disposable records. This deletes permanently.</small>
-
-        </section>
-
-
-        <section class="panel">
-            <h2>Current records</h2>
             <div id="rows" aria-live="polite"></div>
+        </section>
+
+
+        <section class="panel" id="detailPanel">
+            <h2>4 · Request details &amp; history</h2>
+            <div class="inline">
+                <input id="detailId" type="number" min="1" placeholder="Request ID">
+                <button id="showDetail" type="button">Show</button>
+            </div>
+            <div id="detail" aria-live="polite"><small>Pick a request above, or type its ID.</small></div>
+
+            <h3>Change status <code>PATCH</code></h3>
+            <form id="status">
+                <div class="grid">
+                    <label>New status<select name="status" required data-list="statuses"></select></label>
+                    <label>Assign to (staff)<select name="assigned_to_id" data-list="staff" data-blank="Keep current"></select></label>
+                </div>
+                <label>Note<input name="note_text" maxlength="2000" placeholder="Checked the thermostat and filter"></label>
+                <button>Save status change</button>
+            </form>
+
+            <h3>Add a note <code>POST</code></h3>
+            <form id="note" class="inline">
+                <input name="note_text" required maxlength="2000" placeholder="Technician booked for Wednesday">
+                <button>Add note</button>
+            </form>
+        </section>
+
+
+        <section class="panel">
+            <h2>5 · Find a vendor <code>GET</code></h2>
+            <form id="vendors" class="inline">
+                <select name="service_type_id" data-list="serviceTypes" data-blank="Any service"></select>
+                <button>Find vendors</button>
+            </form>
+            <div id="vendorRows"></div>
+        </section>
+
+
+        <section class="panel">
+            <h2>6 · Vendor jobs</h2>
+            <h3>Book a job for the selected request <code>POST</code></h3>
+            <form id="job">
+                <div class="grid">
+                    <label>Vendor<select name="vendor_id" required data-list="vendors"></select></label>
+                    <label>Scheduled date<input name="scheduled_date" type="date"></label>
+                </div>
+                <label>Job description<input name="job_description" required maxlength="2000" placeholder="Diagnose and repair AC not cooling"></label>
+                <button>Book job</button>
+            </form>
+
+            <h3>Finish a job <code>PATCH</code></h3>
+            <form id="finishJob">
+                <div class="grid">
+                    <label>Job ID<input name="id" type="number" min="1" required></label>
+                    <label>Completed date<input name="completed_date" type="date" required></label>
+                    <label>Final cost ($)<input name="final_cost" type="number" min="0" step="0.01"></label>
+                </div>
+                <button>Save job</button>
+            </form>
+        </section>
+
+
+        <section class="panel">
+            <h2>7 · Deliveries</h2>
+            <h3>Record an order <code>POST</code></h3>
+            <form id="delivery">
+                <div class="grid">
+                    <label>Vendor<select name="vendor_id" required data-list="vendors"></select></label>
+                    <label>For job ID (optional)<input name="job_id" type="number" min="1"></label>
+                    <label>Expected date<input name="date_expected" type="date" required></label>
+                    <label>Cost ($)<input name="cost" type="number" min="0" step="0.01"></label>
+                </div>
+                <label>Item<input name="item_description" required maxlength="500" placeholder="Replacement capacitor"></label>
+                <button>Record order</button>
+            </form>
+
+            <h3>Mark received or cancelled <code>PATCH</code></h3>
+            <form id="receive">
+                <div class="grid">
+                    <label>Delivery ID<input name="id" type="number" min="1" required></label>
+                    <label>Status
+                        <select name="status">
+                            <option>Received</option>
+                            <option>Cancelled</option>
+                        </select>
+                    </label>
+                    <label>Date received<input name="date_received" type="date"></label>
+                </div>
+                <button>Update delivery</button>
+            </form>
+        </section>
+
+
+        <section class="panel">
+            <h2>8 · Reports <code>GET</code></h2>
+            <form id="report" class="inline">
+                <select name="name">
+                    <option value="unresolved">Unresolved requests</option>
+                    <option value="requests-by-room">Requests per room</option>
+                    <option value="repeat-problems">Repeat problems (room + kind)</option>
+                    <option value="vendor-costs">Total cost per vendor</option>
+                    <option value="late-deliveries">Late deliveries</option>
+                </select>
+                <button>Run report</button>
+            </form>
+            <div id="reportRows"></div>
         </section>
 
 
@@ -96,7 +184,6 @@
     </main>
 
 
-    
     <script src="/app.js"></script>
 </body>
 

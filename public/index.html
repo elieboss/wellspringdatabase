@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Greenbridge Route Lab</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <main>
+        <header>
+            <p class="eyebrow">Culture & Codes · Lesson 4.5</p>
+            <h1>Greenbridge Route Lab</h1>
+            <p>Four actions. One server. Watch each request and response.</p>
+        </header>
+
+
+        <section class="panel">
+            <h2>1 · Connect</h2>
+            <button id="hello" type="button">Test server connection</button>
+            <span id="connection" role="status"></span>
+        </section>
+
+
+        <section class="panel">
+            <h2>2 · READ <code>GET</code></h2>
+            <label for="search">Search request titles</label>
+            <div class="inline">
+                <input id="search" placeholder="Try light">
+                <button id="read">Search</button>
+            </div>
+        </section>
+
+
+        <section class="panel">
+            <h2>3 · CREATE <code>POST</code></h2>
+            <form id="create">
+                <label>Title<input name="title" required maxlength="120" placeholder="Broken window"></label>
+                <label>Location<input name="location" required maxlength="100" value="Lobby"></label>
+                <label>Description<input name="description" required maxlength="2000" value="Needs repair"></label>
+                <button>Create request</button>
+            </form>
+        </section>
+
+
+        <section class="panel">
+            <h2>4 · UPDATE <code>PATCH</code></h2>
+            
+            <form id="update">
+                <label>Request ID<input name="id" type="number" min="1" required value="1"></label><label>New status
+                    <select name="status">
+                        <option value="submitted">Submitted</option>
+                        <option value="in_progress">In progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </label>
+                
+                <button>Update status</button>
+            
+            </form>
+
+        </section>
+
+
+        <section class="panel">
+            <h2>5 · DELETE <code>DELETE</code></h2>
+            
+            <form id="delete">
+                <label>Test request ID<input name="id" type="number" min="1" required></label>
+                
+                <button class="danger">Delete test record</button>
+            
+            </form>
+            
+            <small>Use only disposable records. This deletes permanently.</small>
+
+        </section>
+
+
+        <section class="panel">
+            <h2>Current records</h2>
+            <div id="rows" aria-live="polite"></div>
+        </section>
+
+
+        <section class="panel trace">
+            <h2>Request / Response trace</h2>
+            <p>Open DevTools → Network → Fetch/XHR to compare with the trace below.</p>
+            <pre id="trace" aria-live="polite">Run an action to see its HTTP details.</pre>
+        </section>
+
+        <p id="message" role="status"></p>
+
+    </main>
+
+
+    
+    <script src="/app.js"></script>
+</body>
+
+</html>

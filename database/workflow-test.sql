@@ -1,7 +1,7 @@
 -- ============================================================
 -- ASSIGNMENT 4 — DATABASE TESTS
 -- ============================================================
--- Run after schema.sql and seed.sql. Everything happens inside
+-- Run after wellspring.sql. Everything happens inside
 -- one transaction that is ROLLED BACK at the end, so the test
 -- leaves no rows behind and can be run again and again.
 --

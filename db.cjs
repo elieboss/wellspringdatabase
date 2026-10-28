@@ -4,13 +4,14 @@
 // Both modes run real PostgreSQL, so the same SQL works in each:
 //
 //   local    — PGlite, a complete PostgreSQL that runs inside
-//              Node. It loads database/schema.sql and seed.sql
-//              into memory every time the server starts. Changes
+//              Node. It loads database/wellspring.sql (tables,
+//              rules and sample data) into memory every time the
+//              server starts. Changes
 //              disappear when the server stops. No setup needed.
 //
 //   supabase — the shared Supabase PostgreSQL database, reached
 //              with the DATABASE_URL connection string in .env.
-//              Run schema.sql and seed.sql there once first.
+//              Run database/wellspring.sql there once first.
 // ============================================================
 
 const fs = require('node:fs');
@@ -35,8 +36,7 @@ async function connect(mode) {
     const db = new PGlite();
 
     // exec() can run a whole file of statements at once.
-    await db.exec(readSql('schema.sql'));
-    await db.exec(readSql('seed.sql'));
+    await db.exec(readSql('wellspring.sql'));
 
     return {
       query: async function (sql, params = []) {

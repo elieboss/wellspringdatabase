@@ -1,7 +1,7 @@
 -- ============================================================
 -- ASSIGNMENT 5 — SQL AND DATA OPERATIONS
 -- ============================================================
--- Run after schema.sql and seed.sql. Each query answers one of
+-- Run after wellspring.sql. Each query answers one of
 -- the practice questions and uses WHERE, JOIN, COUNT, SUM,
 -- GROUP BY, or UPDATE. The Express server runs the same queries
 -- for its /api/reports routes.

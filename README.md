@@ -4,7 +4,7 @@ A database and web app that follows a Wellspring maintenance problem from first 
 
 Team: Annanya Krishnan, Jenifer Back, Ramatoulie Janneh, Elie Bossombo
 
-- **Database:** one PostgreSQL database (Supabase) with 10 tables. Design and changes from the Assignment 3 plan are in [`docs/database-design.md`](docs/database-design.md).
+- **Database:** one PostgreSQL database (Supabase) with 10 tables. Design and changes from the Assignment 3 plan are in [`docs/database-design.md`](docs/database-design.md); the data dictionary is [`docs/data-dictionary.md`](docs/data-dictionary.md).
 - **Server:** Express API (`server.cjs`). Every SQL statement uses `$1` placeholders, never pasted-in text.
 - **Browser:** `public/`. Report problems, change status with history, find vendors, record jobs and deliveries, and run reports. The trace panel shows each HTTP request and response.
 
@@ -18,11 +18,11 @@ cp .env.example .env
 npm start            # http://localhost:3000
 ```
 
-`DATA_MODE=local` (the default) runs a full PostgreSQL in memory (PGlite) and loads `database/schema.sql` and `database/seed.sql` at startup. No account is needed, and changes reset when the server stops.
+`DATA_MODE=local` (the default) runs a full PostgreSQL in memory (PGlite) and loads `database/wellspring.sql` at startup. No account is needed, and changes reset when the server stops.
 
 ### Using Supabase
 
-1. In the Supabase SQL Editor, run `database/schema.sql`, then `database/seed.sql`.
+1. In the Supabase SQL Editor, run `database/wellspring.sql`.
 2. In `.env`, set `DATA_MODE=supabase` and paste the connection string from **Connect → Session pooler** as `DATABASE_URL`.
 3. Run `npm start`.
 
@@ -32,8 +32,7 @@ npm start            # http://localhost:3000
 
 | File | What it is |
 |---|---|
-| `database/schema.sql` | Tables, keys, check rules and triggers for Business Rules 1–10 |
-| `database/seed.sql` | Sample data, including the Deliverable 5 HVAC scenario |
+| `database/wellspring.sql` | **The database**: tables, relationships, Business Rules 1–10, and sample data (including the Deliverable 5 HVAC scenario) |
 | `database/workflow-test.sql` | **Assignment 4** tests: full workflow, relationships, rules (rolls back) |
 | `database/queries.sql` | **Assignment 5** queries: unresolved, per room, HVAC vendors, vendor cost, late deliveries, status update with history |
 | `database/reset.sql` | Drops every table (practice databases only) |

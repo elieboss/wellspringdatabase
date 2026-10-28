@@ -3,7 +3,7 @@
 // ============================================================
 // This server receives requests from the browser and sends
 // JSON responses. All data lives in ONE PostgreSQL database
-// (see database/schema.sql). It can run on an in-memory copy
+// (see database/wellspring.sql). It can run on an in-memory copy
 // (local mode) or on Supabase (supabase mode).
 // ============================================================
 
@@ -137,7 +137,7 @@ function readCost(value, fieldName) {
 }
 
 
-// These lists match the check rules in schema.sql.
+// These lists match the check rules in wellspring.sql.
 const REQUEST_STATUSES = ['Reported', 'Assigned', 'In Progress', 'Resolved'];
 const URGENCIES = ['Low', 'Medium', 'High', 'Urgent'];
 
@@ -713,7 +713,7 @@ app.get('/api/reports/:name', async function (req, res) {
 // 15. ERROR HANDLING
 // ------------------------------------------------------------
 
-// Friendly messages for the named check rules in schema.sql.
+// Friendly messages for the named check rules in wellspring.sql.
 const CONSTRAINT_MESSAGES = {
   request_assigned_before_progress: 'Rule 2: assign a staff member before moving past Reported',
   request_resolved_date_matches_status: 'Rule 5: date_resolved is only filled in when Resolved',
@@ -738,7 +738,7 @@ app.use(function (error, req, res, next) {
 
   // PostgreSQL error codes for broken rules.
   switch (error.code) {
-    case 'P0001':   // raise exception in a schema.sql trigger
+    case 'P0001':   // raise exception in a wellspring.sql trigger
       return res.status(409).json({ error: error.message });
     case '23514': { // check rule
       const name = error.constraint || (error.message.match(/constraint "([^"]+)"/) || [])[1];

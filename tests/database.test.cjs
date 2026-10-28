@@ -21,7 +21,47 @@ test('schema and sample data load', async function () {
            (select count(*) from vendor_job)::int as jobs,
            (select count(*) from delivery)::int as deliveries`);
 
-  assert.deepEqual(counts[0], { requests: 9, updates: 32, jobs: 6, deliveries: 4 });
+  assert.deepEqual(counts[0], { requests: 9, updates: 33, jobs: 6, deliveries: 6 });
+  await db.close();
+});
+
+test('sample data covers every status and workflow situation', async function () {
+  const db = await connect('local');
+  const values = async function (sql) {
+    return (await db.query(sql)).map(function (row) { return row.v; }).sort();
+  };
+
+  assert.deepEqual(await values('select distinct status as v from maintenance_request'),
+    ['Assigned', 'In Progress', 'Reported', 'Resolved']);
+  assert.deepEqual(await values('select distinct urgency as v from maintenance_request'),
+    ['High', 'Low', 'Medium', 'Urgent']);
+  assert.deepEqual(await values('select distinct status as v from delivery'),
+    ['Cancelled', 'Ordered', 'Received']);
+  assert.deepEqual(await values('select distinct person_type as v from person'),
+    ['Board', 'Staff', 'Volunteer']);
+
+  // Every person takes part in the workflow somehow.
+  const idle = await db.query(`
+    select full_name from person p
+    where not exists (select 1 from maintenance_request where p.person_id in (reported_by_id, assigned_to_id))
+      and not exists (select 1 from status_update where author_id = p.person_id)
+      and not exists (select 1 from delivery where received_by_id = p.person_id)`);
+  assert.deepEqual(idle, []);
+
+  const situations = (await db.query(`
+    select
+      exists (select 1 from delivery where job_id is null) as stock_delivery,
+      exists (select 1 from delivery where date_received > date_expected) as late_delivery,
+      exists (select 1 from delivery where date_received <= date_expected) as on_time_delivery,
+      exists (select 1 from room where not is_active) as closed_room,
+      exists (select 1 from vendor where not is_active) as inactive_vendor,
+      exists (select 1 from vendor_job where completed_date is null) as unfinished_job,
+      exists (select 1 from maintenance_request r where status = 'Resolved'
+              and not exists (select 1 from vendor_job j where j.request_id = r.request_id)) as fixed_without_vendor,
+      exists (select 1 from status_update where new_status is null) as plain_note`))[0];
+  for (const [name, present] of Object.entries(situations)) {
+    assert.ok(present, `sample data should include: ${name}`);
+  }
   await db.close();
 });
 

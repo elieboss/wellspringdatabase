@@ -10,7 +10,7 @@ This document updates the Assignment 3 plan, *From Service Requirements to Datab
 |---|---|---|
 | Two databases: Maintenance, and Vendors & Deliveries | **One PostgreSQL database** with separate tables | Instructor feedback: one database simplifies foreign keys and testing. Access can be limited later with roles or policies. |
 | `VendorJob.request_id` and `Delivery.received_by_id` were FK\* links checked by the program | **Real foreign keys** | With one database, PostgreSQL can enforce them (Rules 7 and 8). |
-| Rules 2 (staff only), 3, 4 and 9 were enforced by "the program" | **Database triggers** in `schema.sql` | The rules hold for every program and every SQL Editor user, and the tests can check them. |
+| Rules 2 (staff only), 3, 4 and 9 were enforced by "the program" | **Database triggers** in `wellspring.sql` | The rules hold for every program and every SQL Editor user, and the tests can check them. |
 | The ER diagram calls the history table "Note"; the data dictionary calls it StatusUpdate | **`status_update`** | Matches the data dictionary, which includes `new_status`. |
 | StatusUpdate "cannot be edited" | **Append-only** (a trigger blocks UPDATE and DELETE) | Keeps a permanent history, like an order-tracking page. |
 

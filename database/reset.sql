@@ -2,8 +2,7 @@
 -- RESET — removes every Wellspring table, trigger and function.
 -- ============================================================
 -- WARNING: this permanently deletes all data in these tables.
--- Use it only on a practice database, then run schema.sql and
--- seed.sql again.
+-- Use it only on a practice database, then run wellspring.sql again.
 
 drop table if exists
   delivery,

@@ -1,6 +1,6 @@
 // Runs the SQL files in database/ against an in-memory PostgreSQL
 // (PGlite) so the schema, sample data, Assignment 4 tests and
-// Assignment 5 queries are checked automatically with `npm test`.
+// Assignment 5 operations are checked automatically with `npm test`.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -77,30 +77,49 @@ test('workflow-test.sql passes every check (Assignment 4)', async function () {
   await db.close();
 });
 
-test('queries.sql runs and answers the practice questions (Assignment 5)', async function () {
+test('operations.sql runs every operation and leaves the sample data unchanged (Assignment 5)', async function () {
   const db = await connect('local');
-  const results = await db.exec(readSql('queries.sql'));
-  const selects = results.filter(function (result) {
-    return result.fields.length > 0;
+  const results = await db.exec(readSql('operations.sql'));
+  const rowsOf = function (columnName) {
+    return results.filter(function (result) {
+      return result.fields.some(function (field) { return field.name === columnName; });
+    }).map(function (result) { return result.rows; });
+  };
+
+  // Operation 19: after deactivating Metro Climate, one HVAC vendor is left.
+  const [hvac] = rowsOf('contact_name').slice(-1);
+  assert.deepEqual(hvac.map((r) => r.vendor_name), ['CoolAir Mechanical']);
+
+  // Operation 21: the projector was resolved and the stage lights added.
+  const [byStatus] = rowsOf('requests');
+  assert.deepEqual(byStatus.map((r) => [r.status, Number(r.requests)]), [
+    ['Reported', 1], ['Assigned', 1], ['In Progress', 1], ['Resolved', 7]
+  ]);
+
+  // Operation 22: the repeat problem.
+  const [repeats] = rowsOf('times_reported');
+  assert.deepEqual(repeats.map((r) => [r.room_name, r.category_name, Number(r.times_reported)]), [['Main Hall', 'HVAC', 4]]);
+
+  // Operation 23: cost per vendor.
+  const [costs] = rowsOf('average_job');
+  assert.equal(costs[0].vendor_name, 'CoolAir Mechanical');
+  assert.equal(Number(costs[0].total_cost), 1080);
+
+  // Operation 25: late deliveries, worst first.
+  const [late] = rowsOf('days_late');
+  assert.deepEqual(late.map((r) => [r.item_description, r.days_late]), [
+    ['Projector lamp', 9], ['Pipe fittings', 3], ['Replacement capacitor', 1]
+  ]);
+
+  // The file ends with ROLLBACK, so the original sample data is preserved.
+  const [check] = rowsOf('metro_still_active');
+  assert.deepEqual(check[0], {
+    requests: 9, status_updates: 33, vendor_jobs: 6, deliveries: 6, vendors: 6, metro_still_active: true
   });
 
-  const [unresolved, byRoom, repeats, hvacVendors, vendorCosts, lateDeliveries, overdue, history] =
-    selects.map(function (result) { return result.rows; });
-
-  assert.deepEqual(unresolved.map((r) => r.title), [
-    'Projector will not turn on', 'Sink draining slowly', 'Flickering ceiling light'
-  ]);
-  assert.equal(byRoom[0].room_name, 'Main Hall');
-  assert.equal(Number(byRoom[0].total_requests), 4);
-  assert.deepEqual(repeats.map((r) => [r.room_name, r.category_name]), [['Main Hall', 'HVAC']]);
-  assert.deepEqual(hvacVendors.map((r) => r.vendor_name), ['CoolAir Mechanical', 'Metro Climate Services']);
-  assert.equal(vendorCosts[0].vendor_name, 'CoolAir Mechanical');
-  assert.equal(Number(vendorCosts[0].total_cost), 1080);
-  assert.deepEqual(lateDeliveries.map((r) => [r.item_description, r.days_late]), [
-    ['Pipe fittings', 3], ['Replacement capacitor', 1]
-  ]);
-  assert.equal(overdue.length, 1);
-  assert.deepEqual(history.map((r) => r.new_status), ['Reported', 'Assigned']);
+  // Running it a second time gives the same answers.
+  const again = await db.exec(readSql('operations.sql'));
+  assert.deepEqual(again.at(-1).rows, check);
   await db.close();
 });
 

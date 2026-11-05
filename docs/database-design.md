@@ -152,15 +152,18 @@ erDiagram
 
 `npm test` runs the same script automatically, along with an end-to-end test of the API.
 
-## SQL practice (Assignment 5)
+## SQL operations (Assignment 5)
 
-`database/queries.sql` answers each question:
+`database/operations.sql` holds 25 tested operations that cover every capability. Each one documents its purpose, SQL, result and explanation. The file runs inside a transaction that ends with ROLLBACK, so the original sample data in `wellspring.sql` is preserved and the file can be run again.
 
-| Question | SQL used |
+| Capability | Operations |
 |---|---|
-| Which maintenance requests remain unresolved? | WHERE, JOIN |
-| How many maintenance requests have occurred in each room? | LEFT JOIN, COUNT, GROUP BY (+ HAVING for repeat problems) |
-| Which vendors provide HVAC services? | JOIN through `vendor_service`, WHERE |
-| What is the total repair cost for each vendor? | SUM, GROUP BY in subqueries, LEFT JOIN |
-| Which deliveries arrived after their expected dates? | WHERE comparing two dates |
-| How can staff update a request's status and preserve its history? | UPDATE + INSERT in one transaction |
+| A. Create | 1 report a problem · 2 add a vendor and its services · 3 add a note · 11 book a vendor job |
+| B. Read | 4 vendor directory · 5 recent activity |
+| C. Search and filter | 6 open problems in a room · 7 priority queue · 8 overdue deliveries · 9 keyword search of past problems |
+| D. Update | 10 assign · 11 move to In Progress · 12 receive a delivery · 13 finish a job and resolve · 14 reassign |
+| E. Deactivate / delete | 15 deactivate a vendor · 16 delete a service a vendor no longer offers |
+| F. Joins | 17 full repair record · 18 request history · 19 HVAC vendors · 20 open work board |
+| G. Aggregation | 21 requests by status · 22 per room and repeats · 23 cost per vendor · 24 days to resolve · 25 late deliveries |
+
+The instructor's six practice questions are all answered: unresolved requests (7, 20), requests per room (22), HVAC vendors (19), total cost per vendor (23), late deliveries (25), and updating a status while preserving history (10–13).

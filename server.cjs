@@ -635,7 +635,7 @@ app.patch('/api/deliveries/:id', async function (req, res) {
 // ------------------------------------------------------------
 
 // Requirements 6 and 12: questions leadership asks. These are the
-// same queries as database/queries.sql (Assignment 5).
+// same kind of queries as database/operations.sql (Assignment 5).
 const REPORTS = {
   // Which maintenance requests remain unresolved?
   'unresolved': `

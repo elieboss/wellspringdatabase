@@ -154,16 +154,16 @@ erDiagram
 
 ## SQL operations (Assignment 5)
 
-`database/operations.sql` holds 25 tested operations that cover every capability. Each one documents its purpose, SQL, result and explanation. The file runs inside a transaction that ends with ROLLBACK, so the original sample data in `wellspring.sql` is preserved and the file can be run again.
+`database/operations.sql` holds 14 tested operations, run in order after `wellspring.sql`. Each one documents its purpose, explanation and result. To repeat them, restore the original sample data with `reset.sql` and then `wellspring.sql`.
 
 | Capability | Operations |
 |---|---|
-| A. Create | 1 report a problem · 2 add a vendor and its services · 3 add a note · 11 book a vendor job |
-| B. Read | 4 vendor directory · 5 recent activity |
-| C. Search and filter | 6 open problems in a room · 7 priority queue · 8 overdue deliveries · 9 keyword search of past problems |
-| D. Update | 10 assign · 11 move to In Progress · 12 receive a delivery · 13 finish a job and resolve · 14 reassign |
-| E. Deactivate / delete | 15 deactivate a vendor · 16 delete a service a vendor no longer offers |
-| F. Joins | 17 full repair record · 18 request history · 19 HVAC vendors · 20 open work board |
-| G. Aggregation | 21 requests by status · 22 per room and repeats · 23 cost per vendor · 24 days to resolve · 25 late deliveries |
+| A. Create | Op 1 report a problem (request and first history entry) · Op 2 book a vendor job |
+| B. Read | Op 3 unresolved requests · Op 8 a request's history |
+| C. Search and filter | Op 4 open Urgent/High requests · Op 5 Main Hall HVAC problems since June · Op 10 late deliveries |
+| D. Update | Op 6 assign and change status, keeping history · Op 7 receive a delivery |
+| E. Deactivate | Op 13 deactivate a vendor · Op 14 a permanent delete is refused (Rule 9) |
+| F. Joins | Ops 3, 5, 8, 9, 10, 11, 12 (Op 9 joins five tables) |
+| G. Aggregation | Op 11 COUNT per room · Op 12 SUM cost per vendor |
 
-The instructor's six practice questions are all answered: unresolved requests (7, 20), requests per room (22), HVAC vendors (19), total cost per vendor (23), late deliveries (25), and updating a status while preserving history (10–13).
+The instructor's six practice questions are all answered: unresolved requests (Op 3), requests per room (Op 11), HVAC problems (Op 5), total cost per vendor (Op 12), late deliveries (Op 10), and updating a status while preserving history (Ops 6 and 8).

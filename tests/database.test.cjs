@@ -77,49 +77,43 @@ test('workflow-test.sql passes every check (Assignment 4)', async function () {
   await db.close();
 });
 
-test('operations.sql runs every operation and leaves the sample data unchanged (Assignment 5)', async function () {
+test('operations.sql Ops 1-13 give the documented results and Op 14 is refused (Assignment 5)', async function () {
   const db = await connect('local');
-  const results = await db.exec(readSql('operations.sql'));
+  const [ops, op14] = readSql('operations.sql').split(/(?=^-- -+\n-- Op 14:)/m);
+  const results = await db.exec(ops);
   const rowsOf = function (columnName) {
-    return results.filter(function (result) {
+    return results.find(function (result) {
       return result.fields.some(function (field) { return field.name === columnName; });
-    }).map(function (result) { return result.rows; });
+    }).rows;
   };
 
-  // Operation 19: after deactivating Metro Climate, one HVAC vendor is left.
-  const [hvac] = rowsOf('contact_name').slice(-1);
-  assert.deepEqual(hvac.map((r) => r.vendor_name), ['CoolAir Mechanical']);
+  // Op 1 and Op 2: the new request and its vendor job.
+  assert.equal(rowsOf('first_update_id')[0].title, 'Dishwasher leaking');
+  assert.equal(rowsOf('scheduled_date')[0].job_description, 'Repair leaking dishwasher connection');
 
-  // Operation 21: the projector was resolved and the stage lights added.
-  const [byStatus] = rowsOf('requests');
-  assert.deepEqual(byStatus.map((r) => [r.status, Number(r.requests)]), [
-    ['Reported', 1], ['Assigned', 1], ['In Progress', 1], ['Resolved', 7]
+  // Op 3: four unresolved requests, two unassigned.
+  const unresolved = rowsOf('assigned_to');
+  assert.equal(unresolved.length, 4);
+  assert.equal(unresolved.filter((r) => r.assigned_to === null).length, 2);
+
+  // Op 8: history keeps the old status, in order, even when both rows share a timestamp.
+  assert.deepEqual(rowsOf('written_by').map((r) => r.new_status), ['Reported', 'Assigned']);
+
+  // Op 10: late deliveries, worst first.
+  assert.deepEqual(rowsOf('days_late').map((r) => [r.item_description, r.days_late]), [
+    ['Projector lamp', 10], ['Pipe fittings', 3], ['Replacement capacitor', 1]
   ]);
 
-  // Operation 22: the repeat problem.
-  const [repeats] = rowsOf('times_reported');
-  assert.deepEqual(repeats.map((r) => [r.room_name, r.category_name, Number(r.times_reported)]), [['Main Hall', 'HVAC', 4]]);
+  // Op 11 and Op 12: aggregates.
+  const kitchen = rowsOf('open_requests').find((r) => r.room_name === 'Kitchen');
+  assert.equal(Number(kitchen.open_requests), 2);
+  assert.equal(rowsOf('delivery_cost')[0].vendor_name, 'CoolAir Mechanical');
+  assert.equal(Number(rowsOf('delivery_cost')[0].total_cost), 1080);
 
-  // Operation 23: cost per vendor.
-  const [costs] = rowsOf('average_job');
-  assert.equal(costs[0].vendor_name, 'CoolAir Mechanical');
-  assert.equal(Number(costs[0].total_cost), 1080);
-
-  // Operation 25: late deliveries, worst first.
-  const [late] = rowsOf('days_late');
-  assert.deepEqual(late.map((r) => [r.item_description, r.days_late]), [
-    ['Projector lamp', 9], ['Pipe fittings', 3], ['Replacement capacitor', 1]
-  ]);
-
-  // The file ends with ROLLBACK, so the original sample data is preserved.
-  const [check] = rowsOf('metro_still_active');
-  assert.deepEqual(check[0], {
-    requests: 9, status_updates: 33, vendor_jobs: 6, deliveries: 6, vendors: 6, metro_still_active: true
-  });
-
-  // Running it a second time gives the same answers.
-  const again = await db.exec(readSql('operations.sql'));
-  assert.deepEqual(again.at(-1).rows, check);
+  // Op 14: deleting a vendor is refused, and the vendor is kept.
+  await assert.rejects(db.exec(op14), /Rule 9: vendors are never deleted/);
+  const metro = await db.query("select is_active from vendor where vendor_name = 'Metro Climate Services'");
+  assert.deepEqual(metro, [{ is_active: false }]);
   await db.close();
 });
 

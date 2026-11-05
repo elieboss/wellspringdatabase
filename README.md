@@ -34,7 +34,7 @@ npm start            # http://localhost:3000
 |---|---|
 | `database/wellspring.sql` | **The database**: tables, relationships, Business Rules 1–10, and sample data (including the Deliverable 5 HVAC scenario) |
 | `database/workflow-test.sql` | **Assignment 4** tests: full workflow, relationships, rules (rolls back) |
-| `database/operations.sql` | **Assignment 5** operations: 25 tested create, read, search, update, deactivate, join and aggregate operations, each with purpose, result and explanation. Runs inside a transaction that rolls back, so the sample data is preserved |
+| `database/operations.sql` | **Assignment 5** operations: 14 tested operations (create, read, search and filter, update, deactivate, joins, aggregation), each with purpose, explanation and result. Run each Op on its own, in order; undo with `reset.sql` then `wellspring.sql` |
 | `database/reset.sql` | Drops every table (practice databases only) |
 | `db.cjs` | Connects to PGlite (local) or Supabase (pg) |
 | `server.cjs` | Express API routes |

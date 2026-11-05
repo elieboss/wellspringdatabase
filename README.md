@@ -6,6 +6,7 @@ Team: Annanya Krishnan, Jenifer Back, Ramatoulie Janneh, Elie Bossombo
 
 - **Database:** one PostgreSQL database (Supabase) with 10 tables. Design and changes from the Assignment 3 plan are in [`docs/database-design.md`](docs/database-design.md); the data dictionary is [`docs/data-dictionary.md`](docs/data-dictionary.md).
 - **Server:** Express API (`server.cjs`). Every SQL statement uses `$1` placeholders, never pasted-in text.
+- **Prototype:** an interactive React + Tailwind prototype of the report-to-resolution workflow, live at https://elieboss.github.io/wellspringdatabase/ (source in [`prototype/`](prototype/)).
 - **Browser:** `public/`. Report problems, change status with history, find vendors, record jobs and deliveries, and run reports. The trace panel shows each HTTP request and response.
 
 ## Run it
@@ -39,6 +40,7 @@ npm start            # http://localhost:3000
 | `db.cjs` | Connects to PGlite (local) or Supabase (pg) |
 | `server.cjs` | Express API routes |
 | `public/` | Browser page (`index.html`, `app.js`, `style.css`) |
+| `prototype/` | Interactive prototype (React + Tailwind) of the full workflow, with reporter and staff screens |
 | `tests/` | `npm test`: runs the SQL files and the API workflow automatically |
 
 ## API

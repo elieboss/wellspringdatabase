@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* Wellspring palette: the sage greens of the existing app (public/style.css),
+   with warm amber for open work and a brick red for errors. */
+@theme {
+  --font-sans: Nunito, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: Quicksand, Nunito, ui-sans-serif, system-ui, sans-serif;
+
+  --color-ground: #edf3ed;
+  --color-ink: #193a36;
+  --color-muted: #5b7469;
+  --color-line: #d0ddd3;
+
+  --color-brand-50: #eef5f0;
+  --color-brand-100: #dcebe2;
+  --color-brand-200: #b9d6c4;
+  --color-brand-500: #4f8a74;
+  --color-brand-600: #356a58;
+  --color-brand-700: #2a5546;
+  --color-brand-800: #1f4036;
+
+  --color-open-50: #fdf4e6;
+  --color-open-200: #f3d3a3;
+  --color-open-700: #8a5212;
+
+  --color-danger-50: #fbecea;
+  --color-danger-200: #efc1bb;
+  --color-danger-600: #a63228;
+  --color-danger-700: #8a2920;
+}
+
+html { background: var(--color-ground); }
+body { color: var(--color-ink); }
+
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+
+:focus-visible { outline: 3px solid var(--color-brand-500); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

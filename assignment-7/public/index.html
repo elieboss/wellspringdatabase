@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Wellspring Maintenance</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <main>
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Wellspring · Maintenance</p>
+                <h1>Maintenance requests</h1>
+            </div>
+            <div id="account" hidden>
+                <span id="whoami"></span>
+                <button id="logout" type="button" class="quiet">Sign out</button>
+            </div>
+        </header>
+
+        <nav id="nav" hidden aria-label="Sections">
+            <a href="#/mine">My reports</a>
+            <a href="#/new">Report a problem</a>
+            <a href="#/queue" id="queueLink" hidden>Staff queue</a>
+        </nav>
+
+        <p id="message" role="status" aria-live="polite"></p>
+
+        <!-- Sign in ------------------------------------------------>
+        <section id="view-login" class="panel view" hidden>
+            <h2>Sign in</h2>
+            <form id="loginForm" novalidate>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="username">
+                <p class="field-error" data-for="email"></p>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password">
+                <p class="field-error" data-for="password"></p>
+
+                <button>Sign in</button>
+            </form>
+            <small>Fictional test accounts are listed in README.md (section 2).</small>
+        </section>
+
+        <!-- My reports --------------------------------------------->
+        <section id="view-mine" class="panel view" hidden>
+            <div class="row">
+                <h2>My reports</h2>
+                <a class="button" href="#/new">Report a problem</a>
+            </div>
+            <div id="mineRows"></div>
+        </section>
+
+        <!-- Report a problem --------------------------------------->
+        <section id="view-new" class="panel view" hidden>
+            <h2>Report a problem</h2>
+            <p>All fields are required.</p>
+            <form id="newForm" novalidate>
+                <label for="title">Short title</label>
+                <input id="title" name="title" maxlength="120" placeholder="Stage lights flickering">
+                <p class="field-error" data-for="title"></p>
+
+                <div class="grid">
+                    <div>
+                        <label for="room_id">Room</label>
+                        <select id="room_id" name="room_id"></select>
+                        <p class="field-error" data-for="room_id"></p>
+                    </div>
+                    <div>
+                        <label for="category_id">Kind of problem</label>
+                        <select id="category_id" name="category_id"></select>
+                        <p class="field-error" data-for="category_id"></p>
+                    </div>
+                    <div>
+                        <label for="urgency">Urgency</label>
+                        <select id="urgency" name="urgency"></select>
+                        <p class="field-error" data-for="urgency"></p>
+                    </div>
+                </div>
+
+                <label for="description">What is wrong?</label>
+                <textarea id="description" name="description" rows="4" maxlength="2000"
+                    placeholder="Two stage spotlights flicker during rehearsals."></textarea>
+                <p class="field-error" data-for="description"></p>
+
+                <button>Send report</button>
+            </form>
+        </section>
+
+        <!-- Staff queue -------------------------------------------->
+        <section id="view-queue" class="panel view" hidden>
+            <h2>Staff queue</h2>
+            <form id="filterForm" class="grid" novalidate>
+                <div>
+                    <label for="f_status">Status</label>
+                    <select id="f_status" name="status">
+                        <option value="open">Open (not resolved)</option>
+                        <option value="">All</option>
+                        <option>Reported</option>
+                        <option>Assigned</option>
+                        <option>In Progress</option>
+                        <option>Resolved</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="f_room">Room</label>
+                    <select id="f_room" name="room_id"></select>
+                </div>
+                <div>
+                    <label for="f_search">Title contains</label>
+                    <input id="f_search" name="search" placeholder="light">
+                </div>
+            </form>
+            <p class="hint">Sorted most urgent first, then newest.</p>
+            <div id="queueRows"></div>
+        </section>
+
+        <!-- One request -------------------------------------------->
+        <section id="view-detail" class="view" hidden>
+            <div class="panel">
+                <a id="backLink" href="#/mine">← Back</a>
+                <div id="detail"></div>
+            </div>
+
+            <div class="panel" id="updatePanel" hidden>
+                <h2>Update this request <span class="tag">Staff only</span></h2>
+                <form id="updateForm" novalidate>
+                    <div class="grid">
+                        <div>
+                            <label for="u_status">Status</label>
+                            <select id="u_status" name="status"></select>
+                            <p class="field-error" data-for="status"></p>
+                        </div>
+                        <div>
+                            <label for="u_assignee">Assigned to</label>
+                            <select id="u_assignee" name="assigned_to_id"></select>
+                            <p class="field-error" data-for="assigned_to_id"></p>
+                        </div>
+                    </div>
+                    <label for="u_note">Note for the history (optional)</label>
+                    <input id="u_note" name="note_text" maxlength="2000" placeholder="Checked the dimmer pack; calling an electrician.">
+                    <p class="field-error" data-for="note_text"></p>
+                    <button>Save change</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>History</h2>
+                <ol id="history" class="history"></ol>
+            </div>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>

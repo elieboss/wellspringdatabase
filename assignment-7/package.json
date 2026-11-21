@@ -1,0 +1,20 @@
+{
+  "name": "wellspring-maintenance-a7",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wellspring maintenance feature: report a problem, track it, and let staff update it. Express server + PostgreSQL.",
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "db:reset-local": "node scripts/reset-local-db.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.12",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "pg": "^8.23.1"
+  }
+}
